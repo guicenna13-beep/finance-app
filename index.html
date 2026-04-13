@@ -3,884 +3,198 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="FinanceApp"/>
-  <meta name="theme-color" content="#080812"/>
-  <meta name="description" content="App de finanças pessoais com mascote inteligente"/>
-  <title>FinanceApp 💰</title>
-
-  <!-- PWA Manifest inline -->
-  <link rel="manifest" href="data:application/json,{
-    &quot;name&quot;: &quot;FinanceApp&quot;,
-    &quot;short_name&quot;: &quot;FinanceApp&quot;,
-    &quot;description&quot;: &quot;Finan&ccedil;as pessoais com mascote&quot;,
-    &quot;start_url&quot;: &quot;.&quot;,
-    &quot;display&quot;: &quot;standalone&quot;,
-    &quot;background_color&quot;: &quot;#080812&quot;,
-    &quot;theme_color&quot;: &quot;#080812&quot;,
-    &quot;orientation&quot;: &quot;portrait&quot;,
-    &quot;icons&quot;: [{
-      &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23080812'/%3E%3Ccircle cx='256' cy='230' r='160' fill='%2322c55e'/%3E%3Ccircle cx='256' cy='200' r='160' fill='%2322c55e'/%3E%3Ccircle cx='185' cy='200' r='40' fill='white'/%3E%3Ccircle cx='327' cy='200' r='40' fill='white'/%3E%3Ccircle cx='190' cy='200' r='22' fill='%231a1a2e'/%3E%3Ccircle cx='332' cy='200' r='22' fill='%231a1a2e'/%3E%3Cpath d='M 185 270 Q 256 320 327 270' stroke='%2316a34a' stroke-width='16' fill='none' stroke-linecap='round'/%3E%3C/svg%3E&quot;,
-      &quot;sizes&quot;: &quot;512x512&quot;,
-      &quot;type&quot;: &quot;image/svg+xml&quot;,
-      &quot;purpose&quot;: &quot;any maskable&quot;
-    }]
-  }"/>
-
-  <!-- Apple touch icon -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23080812'/%3E%3Ccircle cx='256' cy='230' r='160' fill='%2322c55e'/%3E%3Ccircle cx='256' cy='200' r='160' fill='%2322c55e'/%3E%3Ccircle cx='185' cy='200' r='40' fill='white'/%3E%3Ccircle cx='327' cy='200' r='40' fill='white'/%3E%3Ccircle cx='190' cy='200' r='22' fill='%231a1a2e'/%3E%3Ccircle cx='332' cy='200' r='22' fill='%231a1a2e'/%3E%3Cpath d='M 185 270 Q 256 320 327 270' stroke='%2316a34a' stroke-width='16' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"/>
-
-  <!-- Splash screen for iOS -->
-  <style>
-    html, body { margin: 0; padding: 0; background: #080812; height: 100%; }
-    #root { height: 100%; }
-    /* Safe area for notch */
-    #app-root { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
-  </style>
-
-  <!-- React + Babel from CDN -->
+  <title>FinanceApp Pro 💰</title>
+  
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono&display=swap');
+    
+    body { margin: 0; padding: 0; background: #080812; color: #f8fafc; font-family: 'DM Sans', sans-serif; }
+    
+    /* Novo Seletor de Meses */
+    .month-nav {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding: 60px 20px 10px;
+      scrollbar-width: none;
+    }
+    .month-nav::-webkit-scrollbar { display: none; }
+    
+    .month-pill {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: #12121f;
+      border: 1px solid #1e1e35;
+      color: #64748b;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .month-pill.active {
+      background: #22c55e;
+      color: #0f0f1a;
+      border-color: #22c55e;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Estilos baseados no seu código original */
+    .card { background: #12121f; border: 1px solid #1e1e35; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
+    input, select { background: #1a1a2e; border: 1px solid #1e1e35; border-radius: 12px; padding: 12px; color: #fff; width: 100%; box-sizing: border-box; }
+    .add-btn { width: 58px; height: 58px; border-radius: 50%; border: none; font-size: 26px; cursor: pointer; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 50; }
+  </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+    const { useState, useEffect, useMemo } = React;
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
-const INITIAL_TRANSACTIONS = [
-  { id: 1, desc: "Salário", amount: 5800, type: "receita", category: "trabalho", date: "2026-03-01", method: "pix" },
-  { id: 2, desc: "Aluguel", amount: -1800, type: "despesa", category: "moradia", date: "2026-03-02", method: "debito" },
-  { id: 3, desc: "Mercado", amount: -320, type: "despesa", category: "alimentacao", date: "2026-03-03", method: "credito" },
-  { id: 4, desc: "Netflix", amount: -45, type: "despesa", category: "lazer", date: "2026-03-04", method: "credito" },
-  { id: 5, desc: "Spotify", amount: -21, type: "despesa", category: "apps", date: "2026-03-05", method: "credito" },
-  { id: 6, desc: "Uber Eats", amount: -87, type: "despesa", category: "lazer", date: "2026-03-05", method: "credito" },
-  { id: 7, desc: "Academia", amount: -100, type: "despesa", category: "saude", date: "2026-03-06", method: "debito" },
-];
-
-const CATEGORIES = [
-  { id: "trabalho", label: "Trabalho", icon: "💼" },
-  { id: "moradia", label: "Moradia", icon: "🏠" },
-  { id: "alimentacao", label: "Alimentação", icon: "🛒" },
-  { id: "lazer", label: "Lazer", icon: "🎮" },
-  { id: "apps", label: "Apps/Streaming", icon: "📱" },
-  { id: "saude", label: "Saúde", icon: "❤️" },
-  { id: "transporte", label: "Transporte", icon: "🚗" },
-  { id: "outros", label: "Outros", icon: "📦" },
-];
-
-const CAT_COLORS = {
-  trabalho: "#4ade80", moradia: "#60a5fa", alimentacao: "#f97316",
-  lazer: "#a78bfa", apps: "#f472b6", saude: "#34d399", transporte: "#fbbf24", outros: "#94a3b8"
-};
-
-// ─── MASCOT SVG STATES ───────────────────────────────────────────────────────
-function MascotFace({ state, size = 80, animated = true }) {
-  const configs = {
-    saudavel: {
-      body: "#22c55e", shadow: "#16a34a", glow: "#4ade80",
-      eyes: "#fff", pupils: "#1a1a2e",
-      mouth: "M 28 52 Q 40 62 52 52",
-      cheeks: "#f9a8d4", aura: "#4ade8033",
-      label: "Saudável", emoji: "😄"
-    },
-    alerta: {
-      body: "#eab308", shadow: "#ca8a04", glow: "#fde047",
-      eyes: "#fff", pupils: "#1a1a2e",
-      mouth: "M 30 54 Q 40 50 50 54",
-      cheeks: "#fde047", aura: "#fde04733",
-      label: "Alerta", emoji: "😟"
-    },
-    critico: {
-      body: "#ef4444", shadow: "#b91c1c", glow: "#f87171",
-      eyes: "#fff", pupils: "#1a1a2e",
-      mouth: "M 28 58 Q 40 48 52 58",
-      cheeks: "#fca5a5", aura: "#f8717133",
-      label: "Crítico", emoji: "😱"
-    },
-    analitico: {
-      body: "#8b5cf6", shadow: "#6d28d9", glow: "#a78bfa",
-      eyes: "#fff", pupils: "#1a1a2e",
-      mouth: "M 30 54 L 50 54",
-      cheeks: "#c4b5fd", aura: "#a78bfa33",
-      label: "Analítico", emoji: "🤨"
+    // Componente MascotFace do seu código original
+    function MascotFace({ state, size = 64 }) {
+      const configs = {
+        saudavel: { body: "#22c55e", mouth: "M 28 52 Q 40 62 52 52", label: "Saudável" },
+        alerta: { body: "#eab308", mouth: "M 30 54 Q 40 50 50 54", label: "Alerta" },
+        critico: { body: "#ef4444", mouth: "M 28 58 Q 40 48 52 58", label: "Crítico" },
+        analitico: { body: "#8b5cf6", mouth: "M 30 54 L 50 54", label: "Analítico" }
+      };
+      const c = configs[state] || configs.saudavel;
+      return (
+        <svg width={size} height={size} viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="32" fill={c.body} />
+          <circle cx="27" cy="35" r="5" fill="white" />
+          <circle cx="53" cy="35" r="5" fill="white" />
+          <path d={c.mouth} stroke="rgba(0,0,0,0.2)" strokeWidth="3" fill="none" strokeLinecap="round" />
+        </svg>
+      );
     }
-  };
 
-  const c = configs[state] || configs.saudavel;
-  const eyeY = state === "alerta" ? 34 : state === "critico" ? 32 : 35;
-  const browAngle = state === "analitico" ? 1 : state === "critico" ? -1 : state === "alerta" ? 0.5 : 0;
+    function App() {
+      // 1. Persistência de Dados
+      const [transactions, setTransactions] = useState(() => {
+        const saved = localStorage.getItem('finance_app_data');
+        return saved ? JSON.parse(saved) : [];
+      });
 
-  return (
-    <div style={{ position: "relative", width: size, height: size }}>
-      {/* Glow aura */}
-      <div style={{
-        position: "absolute", inset: -size * 0.15,
-        borderRadius: "50%",
-        background: `radial-gradient(circle, ${c.glow}44 0%, transparent 70%)`,
-        animation: animated ? "pulse-glow 2s ease-in-out infinite" : "none",
-        zIndex: 0
-      }} />
-      <svg width={size} height={size} viewBox="0 0 80 80" style={{ position: "relative", zIndex: 1 }}>
-        {/* Shadow */}
-        <ellipse cx="40" cy="75" rx="22" ry="5" fill={c.shadow} opacity="0.3" />
-        {/* Body */}
-        <circle cx="40" cy="40" r="32" fill={c.body} />
-        <circle cx="40" cy="34" r="32" fill={c.body} />
-        {/* Highlight */}
-        <ellipse cx="30" cy="22" rx="8" ry="5" fill="#ffffff33" transform="rotate(-20 30 22)" />
-        {/* Eyebrows */}
-        {state === "analitico" && (
-          <>
-            <line x1="20" y1="26" x2="32" y2={22 + browAngle * 4} stroke={c.shadow} strokeWidth="3" strokeLinecap="round" />
-            <line x1="48" y1={22 + browAngle * 4} x2="60" y2="26" stroke={c.shadow} strokeWidth="3" strokeLinecap="round" />
-          </>
-        )}
-        {state === "critico" && (
-          <>
-            <line x1="20" y1="24" x2="32" y2="28" stroke={c.shadow} strokeWidth="3" strokeLinecap="round" />
-            <line x1="48" y1="28" x2="60" y2="24" stroke={c.shadow} strokeWidth="3" strokeLinecap="round" />
-          </>
-        )}
-        {state === "alerta" && (
-          <>
-            <line x1="20" y1="28" x2="32" y2="26" stroke={c.shadow} strokeWidth="2.5" strokeLinecap="round" />
-            <line x1="48" y1="26" x2="60" y2="28" stroke={c.shadow} strokeWidth="2.5" strokeLinecap="round" />
-          </>
-        )}
-        {/* Eyes */}
-        <circle cx="27" cy={eyeY} r="7" fill={c.eyes} />
-        <circle cx="53" cy={eyeY} r="7" fill={c.eyes} />
-        <circle cx="28" cy={eyeY} r="4" fill={c.pupils} />
-        <circle cx="54" cy={eyeY} r="4" fill={c.pupils} />
-        {/* Pupils shine */}
-        <circle cx="29" cy={eyeY - 1} r="1.5" fill="#fff" />
-        <circle cx="55" cy={eyeY - 1} r="1.5" fill="#fff" />
-        {/* Cheeks */}
-        <ellipse cx="20" cy="46" rx="5" ry="3" fill={c.cheeks} opacity="0.6" />
-        <ellipse cx="60" cy="46" rx="5" ry="3" fill={c.cheeks} opacity="0.6" />
-        {/* Mouth */}
-        <path d={c.mouth} stroke={c.shadow} strokeWidth="3" fill="none" strokeLinecap="round" />
-        {/* Sweat drops for critical */}
-        {state === "critico" && (
-          <>
-            <ellipse cx="65" cy="28" rx="2.5" ry="4" fill="#93c5fd" opacity="0.8" />
-            <ellipse cx="68" cy="33" rx="1.5" ry="2.5" fill="#93c5fd" opacity="0.6" />
-          </>
-        )}
-        {/* Monocle for analytical */}
-        {state === "analitico" && (
-          <>
-            <circle cx="53" cy={eyeY} r="9" fill="none" stroke="#fde047" strokeWidth="1.5" opacity="0.8" />
-            <line x1="62" y1={eyeY + 6} x2="67" y2={eyeY + 10} stroke="#fde047" strokeWidth="1.5" />
-          </>
-        )}
-      </svg>
-    </div>
-  );
-}
+      const [currentMonth, setCurrentMonth] = useState(() => {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      });
 
-// ─── DONUT CHART ─────────────────────────────────────────────────────────────
-function DonutChart({ data, total }) {
-  const size = 160;
-  const cx = size / 2, cy = size / 2, r = 58, innerR = 36;
-  let cumAngle = -Math.PI / 2;
-  const slices = data.map(d => {
-    const angle = (d.value / total) * 2 * Math.PI;
-    const start = cumAngle;
-    cumAngle += angle;
-    const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
-    const x2 = cx + r * Math.cos(start + angle), y2 = cy + r * Math.sin(start + angle);
-    const ix1 = cx + innerR * Math.cos(start), iy1 = cy + innerR * Math.sin(start);
-    const ix2 = cx + innerR * Math.cos(start + angle), iy2 = cy + innerR * Math.sin(start + angle);
-    const large = angle > Math.PI ? 1 : 0;
-    const path = `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${large} 0 ${ix1} ${iy1} Z`;
-    return { ...d, path, midAngle: start + angle / 2 };
-  });
+      const [showModal, setShowModal] = useState(false);
+      const [form, setForm] = useState({ desc: "", amount: "", type: "despesa", date: new Date().toISOString().split("T")[0] });
 
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {slices.map((s, i) => (
-        <path key={i} d={s.path} fill={s.color} opacity="0.9" style={{ transition: "all 0.5s" }}>
-          <title>{s.label}: R${s.value.toFixed(0)}</title>
-        </path>
-      ))}
-      <circle cx={cx} cy={cy} r={innerR} fill="#0f0f1a" />
-      <text x={cx} y={cy - 6} textAnchor="middle" fill="#94a3b8" fontSize="9" fontFamily="monospace">GASTOS</text>
-      <text x={cx} y={cy + 8} textAnchor="middle" fill="#f8fafc" fontSize="13" fontWeight="bold" fontFamily="monospace">
-        R${total.toFixed(0)}
-      </text>
-    </svg>
-  );
-}
+      useEffect(() => {
+        localStorage.setItem('finance_app_data', JSON.stringify(transactions));
+      }, [transactions]);
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
-function App() {
-  const [transactions, setTransactions] = useState(INITIAL_TRANSACTIONS);
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingTx, setEditingTx] = useState(null); // tx being edited
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null); // tx id to delete
-  const [showBalloon, setShowBalloon] = useState(true);
-  const [mascotBounce, setMascotBounce] = useState(false);
-  const balloonTimer = useRef(null);
+      // 2. Filtro Temporal
+      const filteredTx = useMemo(() => {
+        return transactions.filter(t => t.date.startsWith(currentMonth));
+      }, [transactions, currentMonth]);
 
-  // Form state
-  const [form, setForm] = useState({
-    desc: "", amount: "", type: "despesa", category: "outros",
-    method: "debito", parcelas: 1, date: new Date().toISOString().split("T")[0]
-  });
+      // Cálculos
+      const receitas = filteredTx.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+      const despesas = filteredTx.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
+      const saldo = receitas - despesas;
 
-  // ── Derived values ──
-  const receitas = transactions.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-  const despesasDebito = transactions.filter(t => t.amount < 0 && (t.method === "debito" || t.method === "pix")).reduce((s, t) => s + Math.abs(t.amount), 0);
-  const fatura = transactions.filter(t => t.amount < 0 && t.method === "credito").reduce((s, t) => s + Math.abs(t.amount), 0);
-  const saldo = receitas - despesasDebito;
-  const totalDespesas = despesasDebito + fatura;
+      // Estado do Mascote (Lógica baseada no seu original)
+      const mascotState = saldo < 0 ? "critico" : saldo < 500 ? "alerta" : "saudavel";
 
-  const lazerApps = transactions.filter(t => t.amount < 0 && (t.category === "lazer" || t.category === "apps")).reduce((s, t) => s + Math.abs(t.amount), 0);
-  const lazerPct = totalDespesas > 0 ? (lazerApps / totalDespesas) * 100 : 0;
-  const saldoPct = receitas > 0 ? (saldo / receitas) * 100 : 0;
+      const handleAdd = () => {
+        if (!form.desc || !form.amount) return;
+        const newTx = {
+          id: Date.now(),
+          ...form,
+          amount: form.type === "despesa" ? -Math.abs(form.amount) : Math.abs(form.amount)
+        };
+        setTransactions([...transactions, newTx]);
+        setShowModal(false);
+        setForm({ desc: "", amount: "", type: "despesa", date: new Date().toISOString().split("T")[0] });
+      };
 
-  const mascotState = lazerPct > 35 ? "analitico" : saldoPct < 10 ? "critico" : saldoPct < 40 ? "alerta" : "saudavel";
+      // Gerar lista de meses para o seletor
+      const months = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"];
 
-  const MESSAGES = {
-    saudavel: ["Estamos bem hoje! 💪", "Seu bolso agradece!", "Economia on fire! 🔥", "Isso que é controle!"],
-    alerta: ["Cuidado com os gastos!", "Tá apertando um pouco...", "Hora de frear 🛑", "Revisa seus gastos?"],
-    critico: ["Dê tchau pra esse dinheiro 😱", "Houston, temos um problema!", "Carteira em modo SOS!", "Para de gastar NOW!"],
-    analitico: ["Lazer demais... 🤨", "Netflix e mais Netflix hein", "Apps viraram hobby caro", "Custo do entretenimento alto"]
-  };
-  const msgs = MESSAGES[mascotState];
-  const [msgIdx] = useState(0);
-  const balloon = msgs[msgIdx % msgs.length];
-
-  // Category chart data
-  const catData = CATEGORIES.map(cat => {
-    const val = transactions.filter(t => t.category === cat.id && t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
-    return { label: cat.label, value: val, color: CAT_COLORS[cat.id], icon: cat.icon };
-  }).filter(d => d.value > 0);
-
-  // Bounce mascot on state changes
-  useEffect(() => {
-    setMascotBounce(true);
-    setShowBalloon(true);
-    const t = setTimeout(() => setMascotBounce(false), 600);
-    return () => clearTimeout(t);
-  }, [mascotState]);
-
-  const openEdit = (tx) => {
-    setEditingTx(tx);
-    setForm({
-      desc: tx.desc,
-      amount: Math.abs(tx.amount).toString(),
-      type: tx.amount > 0 ? "receita" : "despesa",
-      category: tx.category,
-      method: tx.method,
-      parcelas: 1,
-      date: tx.date
-    });
-    setShowAddModal(true);
-  };
-
-  const handleDeleteTx = (id) => {
-    setTransactions(prev => prev.filter(t => t.id !== id));
-    setShowDeleteConfirm(null);
-    setMascotBounce(true);
-    setTimeout(() => setMascotBounce(false), 600);
-  };
-
-  const handleAddTransaction = () => {
-    if (!form.desc || !form.amount) return;
-    const amt = parseFloat(form.amount);
-    const finalAmt = form.type === "despesa" ? -Math.abs(amt) : Math.abs(amt);
-    if (editingTx) {
-      setTransactions(prev => prev.map(t => t.id === editingTx.id
-        ? { ...t, desc: form.desc, amount: finalAmt, type: form.type, category: form.category, method: form.type === "receita" ? "pix" : form.method, date: form.date }
-        : t
-      ));
-      setEditingTx(null);
-    } else {
-      const newTx = { id: Date.now(), desc: form.desc, amount: finalAmt, type: form.type, category: form.category, method: form.type === "receita" ? "pix" : form.method, date: form.date };
-      if (form.type === "despesa" && form.method === "credito" && form.parcelas > 1) {
-        const parc = [];
-        for (let i = 0; i < form.parcelas; i++) {
-          const d = new Date(form.date);
-          d.setMonth(d.getMonth() + i);
-          parc.push({ ...newTx, id: Date.now() + i, desc: `${form.desc} (${i+1}/${form.parcelas})`, amount: finalAmt / form.parcelas, date: d.toISOString().split("T")[0] });
-        }
-        setTransactions(prev => [...prev, ...parc]);
-      } else {
-        setTransactions(prev => [...prev, newTx]);
-      }
-    }
-    setShowAddModal(false);
-    setForm({ desc: "", amount: "", type: "despesa", category: "outros", method: "debito", parcelas: 1, date: new Date().toISOString().split("T")[0] });
-    setMascotBounce(true);
-    setTimeout(() => setMascotBounce(false), 600);
-  };
-
-  const stateColors = { saudavel: "#22c55e", alerta: "#eab308", critico: "#ef4444", analitico: "#8b5cf6" };
-  const stateColor = stateColors[mascotState];
-
-  const sortedTx = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  return (
-    <div style={{
-      minHeight: "100vh", background: "#080812",
-      fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
-      color: "#f8fafc", maxWidth: 420, margin: "0 auto",
-      position: "relative", overflow: "hidden"
-    }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        @keyframes pulse-glow { 0%,100%{opacity:0.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
-        @keyframes bounce { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-10px)} 60%{transform:translateY(-4px)} }
-        @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes balloon-in { from{opacity:0;transform:scale(0.7) translateX(-10px)} to{opacity:1;transform:scale(1) translateX(0)} }
-        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-        @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-        @keyframes scanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
-        .bounce-anim { animation: bounce 0.6s ease; }
-        .card { background: #12121f; border: 1px solid #1e1e35; border-radius: 20px; }
-        .tab-btn { background: none; border: none; cursor: pointer; transition: all 0.2s; }
-        .add-btn { background: none; border: none; cursor: pointer; transition: all 0.15s; }
-        .add-btn:hover { transform: scale(1.05); }
-        input, select { outline: none; }
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #1e1e35; border-radius: 4px; }
-      `}</style>
-
-      {/* Ambient glow background */}
-      <div style={{
-        position: "fixed", top: -100, left: "50%", transform: "translateX(-50%)",
-        width: 300, height: 300,
-        borderRadius: "50%",
-        background: `radial-gradient(circle, ${stateColor}18 0%, transparent 70%)`,
-        transition: "background 1.2s ease",
-        pointerEvents: "none", zIndex: 0
-      }} />
-
-      {/* ── HEADER ── */}
-      <div style={{ padding: "52px 20px 16px", position: "relative", zIndex: 1 }}>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 16,
-          background: "#12121f", border: `1px solid ${stateColor}44`,
-          borderRadius: 24, padding: "14px 18px",
-          boxShadow: `0 0 30px ${stateColor}22`,
-          transition: "border-color 1s, box-shadow 1s"
-        }}>
-          {/* Mascot */}
-          <div className={mascotBounce ? "bounce-anim" : ""} style={{ flexShrink: 0, cursor: "pointer" }}
-            onClick={() => { setMascotBounce(true); setTimeout(() => setMascotBounce(false), 600); }}>
-            <MascotFace state={mascotState} size={64} />
-          </div>
-          {/* Balloon + Saldo */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              background: "#1a1a2e", borderRadius: 12, padding: "7px 12px",
-              fontSize: 12, color: "#e2e8f0", marginBottom: 8,
-              border: `1px solid ${stateColor}55`,
-              animation: "balloon-in 0.4s ease",
-              position: "relative", display: "inline-block", maxWidth: "100%"
-            }}>
-              <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: stateColor, marginRight: 6, animation: "pulse-glow 2s infinite" }} />
-              {balloon}
-              <div style={{
-                position: "absolute", bottom: -6, left: 16,
-                width: 0, height: 0,
-                borderLeft: "6px solid transparent",
-                borderRight: "6px solid transparent",
-                borderTop: `6px solid ${stateColor}55`
-              }} />
-            </div>
-            <div>
-              <div style={{ fontSize: 10, color: "#64748b", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", letterSpacing: 1 }}>Saldo disponível</div>
-              <div style={{
-                fontSize: 24, fontWeight: 700,
-                color: saldo >= 0 ? "#4ade80" : "#f87171",
-                fontFamily: "'DM Mono', monospace", lineHeight: 1.1
-              }}>
-                R$ {Math.abs(saldo).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-          </div>
-          {/* Status badge */}
-          <div style={{
-            flexShrink: 0, background: `${stateColor}22`,
-            border: `1px solid ${stateColor}66`,
-            borderRadius: 10, padding: "4px 10px", fontSize: 11,
-            color: stateColor, fontWeight: 600, textAlign: "center"
-          }}>
-            {mascotState.charAt(0).toUpperCase() + mascotState.slice(1)}
-          </div>
-        </div>
-      </div>
-
-      {/* ── TABS ── */}
-      <div style={{ display: "flex", padding: "0 20px 16px", gap: 8, position: "relative", zIndex: 1 }}>
-        {[
-          { id: "dashboard", icon: "◉", label: "Dashboard" },
-          { id: "transacoes", icon: "⇅", label: "Transações" },
-          { id: "resumo", icon: "▦", label: "Resumo" }
-        ].map(tab => (
-          <button key={tab.id} className="tab-btn" onClick={() => setActiveTab(tab.id)}
-            style={{
-              flex: 1, padding: "9px 4px", borderRadius: 14, fontSize: 12, fontWeight: 600,
-              background: activeTab === tab.id ? stateColor : "#12121f",
-              color: activeTab === tab.id ? "#0f0f1a" : "#64748b",
-              border: `1px solid ${activeTab === tab.id ? stateColor : "#1e1e35"}`,
-              transition: "all 0.3s"
-            }}>
-            <span style={{ marginRight: 4 }}>{tab.icon}</span>{tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ── CONTENT ── */}
-      <div style={{ padding: "0 20px 100px", position: "relative", zIndex: 1 }}>
-
-        {/* ───── DASHBOARD TAB ───── */}
-        {activeTab === "dashboard" && (
-          <div style={{ animation: "fadein 0.4s ease" }}>
-            {/* Quick stats row */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-              {[
-                { label: "Receitas", val: receitas, color: "#4ade80", icon: "↑" },
-                { label: "Despesas", val: totalDespesas, color: "#f87171", icon: "↓" },
-                { label: "Débito/Pix", val: despesasDebito, color: "#60a5fa", icon: "🏦" },
-                { label: "Fatura", val: fatura, color: "#f472b6", icon: "💳" },
-              ].map((item, i) => (
-                <div key={i} className="card" style={{ padding: "14px 16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontSize: 11, color: "#64748b", fontWeight: 500 }}>{item.label}</span>
-                    <span style={{ fontSize: 14 }}>{item.icon}</span>
-                  </div>
-                  <div style={{ fontSize: 17, fontWeight: 700, color: item.color, fontFamily: "'DM Mono', monospace" }}>
-                    R${item.val.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Progress bar */}
-            <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <span style={{ fontSize: 12, color: "#94a3b8" }}>Receita vs Despesa</span>
-                <span style={{ fontSize: 11, color: "#64748b", fontFamily: "'DM Mono', monospace" }}>
-                  {receitas > 0 ? ((totalDespesas / receitas) * 100).toFixed(0) : 0}% usado
-                </span>
-              </div>
-              <div style={{ height: 10, background: "#1e1e35", borderRadius: 10, overflow: "hidden" }}>
-                <div style={{
-                  height: "100%", borderRadius: 10,
-                  width: `${Math.min((totalDespesas / receitas) * 100, 100)}%`,
-                  background: `linear-gradient(90deg, #4ade80, ${stateColor})`,
-                  transition: "width 1s ease"
-                }} />
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 10, color: "#475569" }}>
-                <span>R$0</span><span>R${receitas.toLocaleString("pt-BR", { minimumFractionDigits: 0 })}</span>
-              </div>
-            </div>
-
-            {/* Donut chart */}
-            <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 12 }}>Gastos por categoria</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <DonutChart data={catData} total={catData.reduce((s, d) => s + d.value, 0)} />
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
-                  {catData.map((d, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 8, height: 8, borderRadius: 2, background: d.color, flexShrink: 0 }} />
-                      <span style={{ fontSize: 11, color: "#94a3b8", flex: 1 }}>{d.icon} {d.label}</span>
-                      <span style={{ fontSize: 11, color: "#f8fafc", fontFamily: "'DM Mono', monospace" }}>R${d.value.toFixed(0)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Lazer alert if high */}
-            {lazerPct > 25 && (
-              <div style={{
-                background: "#8b5cf611", border: "1px solid #8b5cf655",
-                borderRadius: 16, padding: 14, display: "flex", gap: 12, alignItems: "center",
-                animation: "fadein 0.5s ease"
-              }}>
-                <MascotFace state="analitico" size={44} animated={false} />
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#a78bfa" }}>Alerta de Lazer & Apps</div>
-                  <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>
-                    {lazerPct.toFixed(0)}% dos gastos em diversão. Máximo recomendado: 25%
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ───── TRANSAÇÕES TAB ───── */}
-        {activeTab === "transacoes" && (
-          <div style={{ animation: "fadein 0.4s ease" }}>
-            <div style={{ fontSize: 13, color: "#475569", marginBottom: 12 }}>
-              {sortedTx.length} registros este mês
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {sortedTx.map(tx => {
-                const cat = CATEGORIES.find(c => c.id === tx.category);
-                const positive = tx.amount > 0;
-                return (
-                  <div key={tx.id} className="card" style={{
-                    padding: "12px 14px", display: "flex", alignItems: "center", gap: 12,
-                    border: showDeleteConfirm === tx.id ? "1px solid #ef444466" : "1px solid #1e1e35",
-                    transition: "border-color 0.2s"
-                  }}>
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 12,
-                      background: positive ? "#22c55e22" : "#1e1e35",
-                      display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0
-                    }}>
-                      {cat?.icon || "📦"}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#f8fafc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.desc}</div>
-                      <div style={{ fontSize: 11, color: "#475569", marginTop: 1 }}>
-                        {tx.date} · {tx.method.toUpperCase()}
-                      </div>
-                    </div>
-                    {showDeleteConfirm === tx.id ? (
-                      <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                        <button onClick={() => handleDeleteTx(tx.id)} style={{
-                          background: "#ef4444", border: "none", color: "#fff",
-                          borderRadius: 10, padding: "5px 10px", fontSize: 12, fontWeight: 700, cursor: "pointer"
-                        }}>Excluir</button>
-                        <button onClick={() => setShowDeleteConfirm(null)} style={{
-                          background: "#1e1e35", border: "none", color: "#94a3b8",
-                          borderRadius: 10, padding: "5px 10px", fontSize: 12, cursor: "pointer"
-                        }}>Cancelar</button>
-                      </div>
-                    ) : (
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                        <div style={{
-                          fontSize: 14, fontWeight: 700, fontFamily: "'DM Mono', monospace",
-                          color: positive ? "#4ade80" : "#f87171"
-                        }}>
-                          {positive ? "+" : "-"}R${Math.abs(tx.amount).toFixed(2)}
-                        </div>
-                        <button onClick={() => openEdit(tx)} style={{
-                          background: "#1e1e35", border: "none", color: "#60a5fa",
-                          borderRadius: 8, width: 28, height: 28, cursor: "pointer", fontSize: 13,
-                          display: "flex", alignItems: "center", justifyContent: "center"
-                        }}>✏️</button>
-                        <button onClick={() => setShowDeleteConfirm(tx.id)} style={{
-                          background: "#1e1e35", border: "none", color: "#f87171",
-                          borderRadius: 8, width: 28, height: 28, cursor: "pointer", fontSize: 13,
-                          display: "flex", alignItems: "center", justifyContent: "center"
-                        }}>🗑️</button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* ───── RESUMO TAB ───── */}
-        {activeTab === "resumo" && (
-          <div style={{ animation: "fadein 0.4s ease" }}>
-            {/* XP / Level */}
-            <div className="card" style={{ padding: 20, marginBottom: 16, background: "linear-gradient(135deg, #12121f, #1a0f2e)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ fontSize: 11, color: "#8b5cf6", fontWeight: 600, textTransform: "uppercase", letterSpacing: 1 }}>Nível Financeiro</div>
-                  <div style={{ fontSize: 28, fontWeight: 800, background: "linear-gradient(135deg, #a78bfa, #60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                    Nível {Math.max(1, Math.floor(saldo / 500))}
-                  </div>
-                  <div style={{ fontSize: 12, color: "#64748b" }}>Economizador {saldoPct > 50 ? "Master" : saldoPct > 30 ? "Pro" : "Iniciante"}</div>
-                </div>
-                <div style={{ fontSize: 40 }}>🏆</div>
-              </div>
-              <div style={{ marginTop: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 11, color: "#64748b" }}>
-                  <span>XP: {Math.floor(saldo * 0.1)} / {Math.floor(receitas * 0.2)}</span>
-                  <span>{Math.min(100, Math.floor((saldo / receitas) * 100))}%</span>
-                </div>
-                <div style={{ height: 8, background: "#1e1e35", borderRadius: 8, overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%", borderRadius: 8, width: `${Math.min(100, Math.floor((saldo / receitas) * 100))}%`,
-                    background: "linear-gradient(90deg, #7c3aed, #2563eb)",
-                    boxShadow: "0 0 10px #7c3aed88", transition: "width 1s"
-                  }} />
-                </div>
-              </div>
-            </div>
-
-            {/* Goals */}
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 10 }}>Metas do Mês</div>
-            {[
-              { label: "Manter saldo positivo", done: saldo > 0, icon: "💰" },
-              { label: "Fatura abaixo de R$800", done: fatura < 800, icon: "💳" },
-              { label: "Lazer abaixo de 25%", done: lazerPct < 25, icon: "🎮" },
-              { label: "Guardar 20% da renda", done: (saldo / receitas) > 0.2, icon: "🐷" },
-            ].map((goal, i) => (
-              <div key={i} className="card" style={{
-                padding: "12px 14px", display: "flex", alignItems: "center", gap: 12, marginBottom: 8,
-                border: `1px solid ${goal.done ? "#22c55e44" : "#1e1e35"}`
-              }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: 10, fontSize: 18,
-                  background: goal.done ? "#22c55e22" : "#1e1e35",
-                  display: "flex", alignItems: "center", justifyContent: "center"
-                }}>{goal.icon}</div>
-                <div style={{ flex: 1, fontSize: 13, color: goal.done ? "#f8fafc" : "#64748b" }}>{goal.label}</div>
-                <div style={{
-                  width: 22, height: 22, borderRadius: "50%",
-                  background: goal.done ? "#22c55e" : "#1e1e35",
-                  border: `2px solid ${goal.done ? "#22c55e" : "#334155"}`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 12
-                }}>{goal.done ? "✓" : ""}</div>
-              </div>
+      return (
+        <div style={{ maxWidth: 420, margin: "0 auto", position: "relative", minHeight: "100vh" }}>
+          
+          {/* Seletor de Meses */}
+          <div className="month-nav">
+            {months.map(m => (
+              <button 
+                key={m} 
+                className={`month-pill ${currentMonth === m ? 'active' : ''}`}
+                onClick={() => setCurrentMonth(m)}
+              >
+                {new Date(m + "-02").toLocaleString('pt-BR', { month: 'short' }).toUpperCase()}
+              </button>
             ))}
-
-            {/* Mood history */}
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", margin: "16px 0 10px" }}>Estado do Mascote</div>
-            <div className="card" style={{ padding: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
-                {[
-                  { state: "saudavel", label: "Saudável", color: "#22c55e" },
-                  { state: "alerta", label: "Alerta", color: "#eab308" },
-                  { state: "critico", label: "Crítico", color: "#ef4444" },
-                  { state: "analitico", label: "Analítico", color: "#8b5cf6" },
-                ].map(s => (
-                  <div key={s.state} style={{ textAlign: "center" }}>
-                    <div style={{ opacity: mascotState === s.state ? 1 : 0.3, transition: "opacity 0.5s" }}>
-                      <MascotFace state={s.state} size={38} animated={mascotState === s.state} />
-                    </div>
-                    <div style={{ fontSize: 9, color: s.color, marginTop: 4, fontWeight: 600 }}>
-                      {s.label}
-                    </div>
-                    {mascotState === s.state && (
-                      <div style={{ width: 4, height: 4, borderRadius: "50%", background: s.color, margin: "3px auto 0" }} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
-        )}
-      </div>
 
-      {/* ── FAB ADD BUTTON ── */}
-      <div style={{
-        position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-        display: "flex", gap: 12, zIndex: 50
-      }}>
-        <button className="add-btn" onClick={() => setShowAddModal(true)} style={{
-          width: 58, height: 58, borderRadius: "50%",
-          background: `linear-gradient(135deg, ${stateColor}, ${stateColor}bb)`,
-          boxShadow: `0 4px 20px ${stateColor}66`,
-          fontSize: 26, color: "#0f0f1a", fontWeight: 900, border: "none",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "all 0.3s"
-        }}>+</button>
-      </div>
-
-      {/* ── ADD MODAL ── */}
-      {showAddModal && (
-        <div style={{
-          position: "fixed", inset: 0, background: "#00000088", zIndex: 100,
-          display: "flex", alignItems: "flex-end"
-        }} onClick={e => e.target === e.currentTarget && setShowAddModal(false)}>
-          <div style={{
-            width: "100%", maxWidth: 420, margin: "0 auto",
-            background: "#12121f", borderRadius: "24px 24px 0 0",
-            padding: 24, animation: "slideUp 0.35s ease",
-            border: "1px solid #1e1e35", borderBottom: "none"
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          {/* Header com Mascote */}
+          <div style={{ padding: 20 }}>
+            <div className="card" style={{ display: "flex", alignItems: "center", gap: 20, borderLeft: `4px solid ${saldo >= 0 ? '#22c55e' : '#ef4444'}` }}>
+              <MascotFace state={mascotState} />
               <div>
-                <div style={{ fontSize: 17, fontWeight: 700 }}>{editingTx ? "Editar Transação" : "Nova Transação"}</div>
-                <div style={{ fontSize: 11, color: "#475569", marginTop: 2 }}>{editingTx ? "Altere os dados abaixo" : "Registre um gasto ou receita"}</div>
-              </div>
-              <button onClick={() => { setShowAddModal(false); setEditingTx(null); }} style={{
-                background: "#1e1e35", border: "none", color: "#94a3b8",
-                width: 32, height: 32, borderRadius: "50%", cursor: "pointer", fontSize: 16
-              }}>×</button>
-            </div>
-
-            {/* Type toggle */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              {["despesa", "receita"].map(t => (
-                <button key={t} onClick={() => setForm(f => ({ ...f, type: t }))} style={{
-                  flex: 1, padding: "10px", borderRadius: 14, fontSize: 13, fontWeight: 600,
-                  background: form.type === t ? (t === "receita" ? "#22c55e" : "#ef4444") : "#1e1e35",
-                  color: form.type === t ? "#0f0f1a" : "#64748b", border: "none", cursor: "pointer",
-                  transition: "all 0.2s"
-                }}>
-                  {t === "receita" ? "↑ Receita" : "↓ Despesa"}
-                </button>
-              ))}
-            </div>
-
-            {/* Description */}
-            <input value={form.desc} onChange={e => setForm(f => ({ ...f, desc: e.target.value }))}
-              placeholder="Descrição (ex: Mercado, Salário...)"
-              style={{
-                width: "100%", background: "#1a1a2e", border: "1px solid #1e1e35",
-                borderRadius: 14, padding: "12px 14px", color: "#f8fafc", fontSize: 14,
-                marginBottom: 12
-              }} />
-
-            {/* Amount */}
-            <div style={{ position: "relative", marginBottom: 12 }}>
-              <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#475569", fontSize: 14 }}>R$</span>
-              <input type="number" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
-                placeholder="0,00"
-                style={{
-                  width: "100%", background: "#1a1a2e", border: "1px solid #1e1e35",
-                  borderRadius: 14, padding: "12px 14px 12px 38px", color: "#f8fafc", fontSize: 14
-                }} />
-            </div>
-
-            {/* Category + Method */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
-              <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                style={{
-                  background: "#1a1a2e", border: "1px solid #1e1e35",
-                  borderRadius: 14, padding: "10px 12px", color: "#f8fafc", fontSize: 13
-                }}>
-                {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.icon} {c.label}</option>)}
-              </select>
-              {form.type === "despesa" ? (
-                <select value={form.method} onChange={e => setForm(f => ({ ...f, method: e.target.value }))}
-                  style={{
-                    background: "#1a1a2e", border: "1px solid #1e1e35",
-                    borderRadius: 14, padding: "10px 12px", color: "#f8fafc", fontSize: 13
-                  }}>
-                  <option value="debito">🏦 Débito</option>
-                  <option value="pix">⚡ Pix</option>
-                  <option value="credito">💳 Crédito</option>
-                </select>
-              ) : (
-                <div style={{ background: "#1a1a2e", border: "1px solid #1e1e35", borderRadius: 14, padding: "10px 12px", fontSize: 13, color: "#64748b" }}>⚡ Pix/Depósito</div>
-              )}
-            </div>
-
-            {/* Parcelas (only credit) */}
-            {form.method === "credito" && form.type === "despesa" && (
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}>Parcelamento</div>
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {[1, 2, 3, 6, 12].map(p => (
-                    <button key={p} onClick={() => setForm(f => ({ ...f, parcelas: p }))} style={{
-                      padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600,
-                      background: form.parcelas === p ? stateColor : "#1e1e35",
-                      color: form.parcelas === p ? "#0f0f1a" : "#64748b",
-                      border: "none", cursor: "pointer", transition: "all 0.2s"
-                    }}>
-                      {p === 1 ? "À vista" : `${p}x`}
-                    </button>
-                  ))}
+                <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase" }}>Saldo em {currentMonth}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, fontFamily: 'DM Mono' }}>
+                  R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </div>
-                {form.parcelas > 1 && form.amount && (
-                  <div style={{ fontSize: 11, color: "#8b5cf6", marginTop: 6 }}>
-                    {form.parcelas}x de R${(parseFloat(form.amount) / form.parcelas).toFixed(2)}
-                  </div>
-                )}
               </div>
-            )}
-
-            {/* Date */}
-            <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-              style={{
-                width: "100%", background: "#1a1a2e", border: "1px solid #1e1e35",
-                borderRadius: 14, padding: "10px 14px", color: "#f8fafc", fontSize: 13, marginBottom: 16
-              }} />
-
-            <button onClick={handleAddTransaction} style={{
-              width: "100%", padding: 14, borderRadius: 16, fontSize: 15, fontWeight: 700,
-              background: `linear-gradient(135deg, ${stateColor}, ${stateColor}bb)`,
-              color: "#0f0f1a", border: "none", cursor: "pointer",
-              boxShadow: `0 4px 16px ${stateColor}44`, transition: "all 0.2s"
-            }}>
-              {editingTx ? "Salvar Alterações ✓" : "Registrar Transação"}
-            </button>
+            </div>
           </div>
+
+          {/* Lista de Transações */}
+          <div style={{ padding: "0 20px 100px" }}>
+            <h3 style={{ fontSize: 14, color: "#64748b", marginBottom: 15 }}>Transações do Mês</h3>
+            {filteredTx.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 40, color: "#475569" }}>Nenhum registro encontrado.</div>
+            ) : (
+              filteredTx.sort((a,b) => b.id - a.id).map(tx => (
+                <div key={tx.id} className="card" style={{ display: "flex", justifyContent: "space-between", padding: 12 }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600 }}>{tx.desc}</div>
+                    <div style={{ fontSize: 11, color: "#475569" }}>{tx.date}</div>
+                  </div>
+                  <div style={{ color: tx.amount > 0 ? "#4ade80" : "#f87171", fontWeight: 700 }}>
+                    {tx.amount > 0 ? "+" : "-"} R$ {Math.abs(tx.amount).toFixed(2)}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          <button className="add-btn" onClick={() => setShowModal(true)} style={{ background: "#22c55e" }}>+</button>
+
+          {/* Modal Simplificado */}
+          {showModal && (
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 100, display: "flex", alignItems: "flex-end" }}>
+              <div style={{ background: "#12121f", width: "100%", padding: 24, borderRadius: "24px 24px 0 0" }}>
+                <h3 style={{ margin: "0 0 20px" }}>Nova Transação</h3>
+                <input type="text" placeholder="Descrição" value={form.desc} onChange={e => setForm({...form, desc: e.target.value})} style={{ marginBottom: 12 }} />
+                <input type="number" placeholder="Valor" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} style={{ marginBottom: 12 }} />
+                <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} style={{ marginBottom: 12 }}>
+                  <option value="despesa">Despesa</option>
+                  <option value="receita">Receita</option>
+                </select>
+                <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} style={{ marginBottom: 20 }} />
+                <button onClick={handleAdd} style={{ width: "100%", padding: 14, background: "#22c55e", border: "none", borderRadius: 12, fontWeight: 700 }}>Salvar</button>
+                <button onClick={() => setShowModal(false)} style={{ width: "100%", padding: 10, background: "transparent", color: "#64748b", border: "none", marginTop: 10 }}>Cancelar</button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  );
-}
-
-
-    // Mount app + persist to localStorage
-    const AppWithStorage = () => {
-      return <App />;
-    };
+      );
+    }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<AppWithStorage />);
-  </script>
-
-  <!-- Service Worker for offline -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE = 'financeapp-v1';
-        const ASSETS = [location.href];
-        self.addEventListener('install', e => {
-          e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-          self.skipWaiting();
-        });
-        self.addEventListener('activate', e => {
-          e.waitUntil(caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-          ));
-          self.clients.claim();
-        });
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match(e.request)))
-          );
-        });
-      `;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swUrl = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(swUrl).catch(() => {});
-    }
-
-    // iOS install banner
-    window.addEventListener('load', () => {
-      const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-      const isStandalone = window.navigator.standalone;
-      if (isIOS && !isStandalone && !localStorage.getItem('pwa-banner-dismissed')) {
-        const banner = document.createElement('div');
-        banner.style.cssText = `
-          position:fixed;bottom:0;left:0;right:0;z-index:9999;
-          background:#1a1a2e;border-top:1px solid #22c55e44;
-          padding:14px 18px 28px;display:flex;align-items:center;gap:12px;
-          font-family:-apple-system,sans-serif;animation:slideUp 0.4s ease;
-        `;
-        banner.innerHTML = \`
-          <div style="font-size:32px">📲</div>
-          <div style="flex:1">
-            <div style="color:#f8fafc;font-size:14px;font-weight:600">Instalar no iPhone</div>
-            <div style="color:#94a3b8;font-size:12px;margin-top:2px">Toque em <strong style="color:#60a5fa">⎙ Compartilhar</strong> → "Adicionar à Tela de Início"</div>
-          </div>
-          <button id="dismiss-pwa" style="background:#1e1e35;border:none;color:#64748b;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px">×</button>
-        \`;
-        document.body.appendChild(banner);
-        document.getElementById('dismiss-pwa').addEventListener('click', () => {
-          banner.remove();
-          localStorage.setItem('pwa-banner-dismissed', '1');
-        });
-      }
-    });
+    root.render(<App />);
   </script>
 </body>
 </html>
