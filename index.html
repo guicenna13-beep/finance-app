@@ -46,7 +46,7 @@
   <script type="text/babel">
     const { useState, useEffect, useRef, useMemo } = React;
 
-// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+// ─── CONSTANTES ───────────────────────────────────────────────────────────────
 const INITIAL_TRANSACTIONS = [
   { id: 1, desc: "Salário Base", amount: 5800, type: "receita", category: "trabalho", date: new Date().toISOString().split("T")[0], method: "pix" },
 ];
@@ -74,7 +74,7 @@ const MESSAGES = {
   analitico: ["Lazer demais hoje? 🤨", "Muitos apps e streams", "Hora de analisar custos", "Diversão custa caro!"]
 };
 
-// ─── COMPONENTS ─────────────────────────────────────────────────────────────
+// ─── COMPONENTES ─────────────────────────────────────────────────────────────
 
 function MascotFace({ state, size = 80, animated = true }) {
   const configs = {
@@ -155,7 +155,7 @@ function DonutChart({ data, total }) {
   );
 }
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+// ─── APP PRINCIPAL ────────────────────────────────────────────────────────────
 function App() {
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem("finance_txs_v1");
@@ -165,33 +165,31 @@ function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [mascotBounce, setMascotBounce] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
 
-  // Persist
+  // Persistência
   useEffect(() => {
     localStorage.setItem("finance_txs_v1", JSON.stringify(transactions));
   }, [transactions]);
 
-  // Form state
+  // Estado do formulário
   const [form, setForm] = useState({
     desc: "", amount: "", type: "despesa", category: "outros",
     method: "debito", parcelas: 1, date: new Date().toISOString().split("T")[0]
   });
 
-  // Filtered transactions
+  // Transações filtradas
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => t.date.startsWith(currentMonth));
   }, [transactions, currentMonth]);
 
-  // Calculations
+  // Cálculos
   const receitas = filteredTransactions.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const totalDespesas = filteredTransactions.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
-  const despesasDebito = filteredTransactions.filter(t => t.amount < 0 && (t.method === "debito" || t.method === "pix")).reduce((s, t) => s + Math.abs(t.amount), 0);
   const fatura = filteredTransactions.filter(t => t.amount < 0 && t.method === "credito").reduce((s, t) => s + Math.abs(t.amount), 0);
   const saldo = receitas - totalDespesas;
 
@@ -293,7 +291,7 @@ function App() {
         button { cursor: pointer; border: none; font-family: inherit; }
       `}</style>
 
-      {/* Glow background */}
+      {/* Glow de fundo dinâmico */}
       <div style={{
         position: "fixed", top: -50, left: "50%", transform: "translateX(-50%)",
         width: 300, height: 300, borderRadius: "50%",
@@ -321,7 +319,7 @@ function App() {
           borderRadius: 24, padding: "16px",
           boxShadow: `0 8px 30px #00000044`
         }}>
-          <div className={mascotBounce ? "bounce-anim" : ""} style={{ flexShrink: 0, animation: mascotBounce ? "bounce 0.6s" : "none" }}>
+          <div style={{ flexShrink: 0, animation: mascotBounce ? "bounce 0.6s" : "none" }}>
             <MascotFace state={mascotState} size={64} />
           </div>
           <div style={{ flex: 1 }}>
@@ -364,7 +362,7 @@ function App() {
         ))}
       </div>
 
-      {/* ── CONTENT ── */}
+      {/* ── CONTEÚDO ── */}
       <div style={{ padding: "10px 20px 120px", position: "relative", zIndex: 1 }}>
 
         {/* ── DASHBOARD ── */}
@@ -386,7 +384,7 @@ function App() {
             </div>
 
             <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 12 }}>Categorias</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 12 }}>Categorias de Gasto</div>
               <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
                 <DonutChart data={catData} total={totalDespesas} />
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
@@ -394,31 +392,31 @@ function App() {
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ width: 8, height: 8, borderRadius: 2, background: d.color }} />
                       <span style={{ fontSize: 11, color: "#94a3b8", flex: 1 }}>{d.label}</span>
-                      <span style={{ fontSize: 11, color: "#f8fafc", fontFamily: "'DM Mono', monospace" }}>{((d.value/totalDespesas)*100).toFixed(0)}%</span>
+                      <span style={{ fontSize: 11, color: "#f8fafc", fontFamily: "'DM Mono', monospace" }}>{totalDespesas > 0 ? ((d.value/totalDespesas)*100).toFixed(0) : 0}%</span>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {lazerPct > 25 && (
+            {lazerPct > 30 && (
               <div style={{ background: "#8b5cf615", border: "1px solid #8b5cf633", borderRadius: 16, padding: 16, display: "flex", gap: 12 }}>
                 <span style={{ fontSize: 24 }}>🤨</span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#a78bfa" }}>Gasto excessivo com Lazer</div>
-                  <div style={{ fontSize: 11, color: "#94a3b8" }}>Você já usou {lazerPct.toFixed(0)}% das despesas com diversão. Tente segurar!</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#a78bfa" }}>Cuidado com o Lazer!</div>
+                  <div style={{ fontSize: 11, color: "#94a3b8" }}>Já usaste {lazerPct.toFixed(0)}% das despesas em diversão este mês.</div>
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* ── TRANSAÇÕES ── */}
+        {/* ── EXTRATO ── */}
         {activeTab === "transacoes" && (
           <div style={{ animation: "fadein 0.4s ease" }}>
             {sortedTx.length === 0 ? (
               <div style={{ textAlign: "center", padding: "40px 0", color: "#64748b" }}>
-                Nenhuma transação este mês 🌿
+                Sem movimentos este mês. 🌿
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -437,9 +435,7 @@ function App() {
                       </div>
                       <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 4 }}>
                         <button onClick={() => openEdit(tx)} style={{ background: "transparent", color: "#60a5fa", fontSize: 12 }}>Editar</button>
-                        <button onClick={() => {
-                          setTransactions(prev => prev.filter(t => t.id !== tx.id));
-                        }} style={{ background: "transparent", color: "#f87171", fontSize: 12 }}>Excluir</button>
+                        <button onClick={() => setTransactions(prev => prev.filter(t => t.id !== tx.id))} style={{ background: "transparent", color: "#f87171", fontSize: 12 }}>Apagar</button>
                       </div>
                     </div>
                   </div>
@@ -449,7 +445,7 @@ function App() {
           </div>
         )}
 
-        {/* ── RESUMO/METAS ── */}
+        {/* ── METAS ── */}
         {activeTab === "resumo" && (
           <div style={{ animation: "fadein 0.4s ease" }}>
              <div className="card" style={{ padding: 20, marginBottom: 16, background: "linear-gradient(135deg, #12121f, #1a0f2e)" }}>
@@ -458,17 +454,17 @@ function App() {
                   Nível {Math.max(1, Math.floor(receitas / 1000))}
                 </div>
                 <div style={{ height: 6, background: "#1e1e35", borderRadius: 10, marginTop: 12, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.min(100, (saldo/receitas)*100)}%`, background: "#8b5cf6" }} />
+                  <div style={{ height: "100%", width: `${Math.min(100, Math.max(0, (saldo/receitas)*100))}%`, background: "#8b5cf6" }} />
                 </div>
-                <div style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>{saldoPct.toFixed(0)}% da renda poupada</div>
+                <div style={{ fontSize: 11, color: "#64748b", marginTop: 8 }}>{saldoPct.toFixed(0)}% da renda guardada</div>
              </div>
 
-             <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 12 }}>Checklist Mensal</div>
+             <div style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", marginBottom: 12 }}>Checklist do Mês</div>
              {[
                { l: "Saldo Positivo", d: saldo > 0 },
-               { l: "Fatura < R$ 1.500", d: fatura < 1500 },
+               { l: "Cartão < R$ 1.500", d: fatura < 1500 },
                { l: "Lazer sob controle", d: lazerPct < 25 },
-               { l: "Poupou mais de 10%", d: saldoPct > 10 }
+               { l: "Poupar > 10%", d: saldoPct > 10 }
              ].map((g, i) => (
                <div key={i} className="card" style={{ padding: 14, marginBottom: 8, display: "flex", justifyContent: "space-between", border: `1px solid ${g.d ? "#22c55e33" : "#1e1e35"}` }}>
                  <span style={{ fontSize: 13, color: g.d ? "#f8fafc" : "#64748b" }}>{g.l}</span>
@@ -480,7 +476,7 @@ function App() {
 
       </div>
 
-      {/* ── FAB ── */}
+      {/* ── BOTÃO ADICIONAR ── */}
       <button onClick={() => setShowAddModal(true)} style={{
         position: "fixed", bottom: 30, left: "50%", transform: "translateX(-50%)",
         width: 64, height: 64, borderRadius: "50%", background: stateColor,
@@ -488,13 +484,13 @@ function App() {
         boxShadow: `0 8px 24px ${stateColor}66`
       }}>+</button>
 
-      {/* ── MODAL ── */}
+      {/* ── MODAL DE ADIÇÃO/EDIÇÃO ── */}
       {showAddModal && (
         <div style={{ position: "fixed", inset: 0, background: "#000000aa", zIndex: 100, display: "flex", alignItems: "flex-end" }}
           onClick={e => e.target === e.currentTarget && setShowAddModal(false)}>
           <div style={{ width: "100%", background: "#12121f", borderRadius: "24px 24px 0 0", padding: 24, animation: "slideUp 0.3s ease" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-              <div style={{ fontSize: 18, fontWeight: 700 }}>{editingTx ? "Editar" : "Nova Transação"}</div>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>{editingTx ? "Editar Registo" : "Novo Registo"}</div>
               <button onClick={() => { setShowAddModal(false); setEditingTx(null); }} style={{ background: "transparent", color: "#64748b", fontSize: 24 }}>×</button>
             </div>
 
@@ -530,7 +526,7 @@ function App() {
               style={{ width: "100%", background: "#1a1a2e", color: "#fff", padding: 12, borderRadius: 12, marginBottom: 20 }} />
 
             <button onClick={handleAddTransaction} style={{ width: "100%", background: stateColor, color: "#0f0f1a", padding: 16, borderRadius: 16, fontWeight: 700, fontSize: 16 }}>
-              {editingTx ? "Salvar Alterações" : "Salvar Transação"}
+              {editingTx ? "Guardar Alterações" : "Salvar Movimento"}
             </button>
           </div>
         </div>
