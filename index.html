@@ -3,198 +3,112 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <title>FinanceApp Pro 💰</title>
-  
+  <title>FinanceApp 💰</title>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
   <style>
+    /* Estilos originais preservados */
+    html, body { margin: 0; padding: 0; background: #080812; height: 100%; font-family: 'DM Sans', sans-serif; color: #f8fafc; }
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono&display=swap');
-    
-    body { margin: 0; padding: 0; background: #080812; color: #f8fafc; font-family: 'DM Sans', sans-serif; }
-    
-    /* Novo Seletor de Meses */
-    .month-nav {
-      display: flex;
-      overflow-x: auto;
-      gap: 12px;
-      padding: 60px 20px 10px;
-      scrollbar-width: none;
-    }
+    * { box-sizing: border-box; }
+    .card { background: #12121f; border: 1px solid #1e1e35; border-radius: 20px; }
+    .month-nav { display: flex; overflow-x: auto; gap: 8px; padding: 10px 20px; scrollbar-width: none; position: relative; z-index: 10; }
     .month-nav::-webkit-scrollbar { display: none; }
-    
-    .month-pill {
-      padding: 8px 16px;
-      border-radius: 20px;
-      background: #12121f;
-      border: 1px solid #1e1e35;
-      color: #64748b;
-      cursor: pointer;
-      white-space: nowrap;
-      font-size: 13px;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-    .month-pill.active {
-      background: #22c55e;
-      color: #0f0f1a;
-      border-color: #22c55e;
-      box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
-    }
-
-    /* Estilos baseados no seu código original */
-    .card { background: #12121f; border: 1px solid #1e1e35; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
-    input, select { background: #1a1a2e; border: 1px solid #1e1e35; border-radius: 12px; padding: 12px; color: #fff; width: 100%; box-sizing: border-box; }
-    .add-btn { width: 58px; height: 58px; border-radius: 50%; border: none; font-size: 26px; cursor: pointer; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 50; }
+    .m-btn { padding: 6px 12px; border-radius: 12px; background: #12121f; border: 1px solid #1e1e35; color: #64748b; cursor: pointer; font-size: 11px; font-weight: 700; white-space: nowrap; transition: 0.3s; }
+    .m-btn.active { background: #22c55e; color: #0f0f1a; border-color: #22c55e; }
+    @keyframes pulse-glow { 0%,100%{opacity:0.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-10px)} 60%{transform:translateY(-4px)} }
+    .bounce-anim { animation: bounce 0.6s ease; }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+    const { useState, useEffect, useRef, useMemo } = React;
 
-    // Componente MascotFace do seu código original
-    function MascotFace({ state, size = 64 }) {
-      const configs = {
-        saudavel: { body: "#22c55e", mouth: "M 28 52 Q 40 62 52 52", label: "Saudável" },
-        alerta: { body: "#eab308", mouth: "M 30 54 Q 40 50 50 54", label: "Alerta" },
-        critico: { body: "#ef4444", mouth: "M 28 58 Q 40 48 52 58", label: "Crítico" },
-        analitico: { body: "#8b5cf6", mouth: "M 30 54 L 50 54", label: "Analítico" }
-      };
-      const c = configs[state] || configs.saudavel;
-      return (
-        <svg width={size} height={size} viewBox="0 0 80 80">
-          <circle cx="40" cy="40" r="32" fill={c.body} />
-          <circle cx="27" cy="35" r="5" fill="white" />
-          <circle cx="53" cy="35" r="5" fill="white" />
-          <path d={c.mouth} stroke="rgba(0,0,0,0.2)" strokeWidth="3" fill="none" strokeLinecap="round" />
-        </svg>
-      );
+    // --- CONFIGURAÇÕES ORIGINAIS ---
+    const CATEGORIES = [
+      { id: "trabalho", label: "Trabalho", icon: "💼" },
+      { id: "moradia", label: "Moradia", icon: "🏠" },
+      { id: "alimentacao", label: "Alimentação", icon: "🛒" },
+      { id: "lazer", label: "Lazer", icon: "🎮" },
+      { id: "apps", label: "Apps/Streaming", icon: "📱" },
+      { id: "saude", label: "Saúde", icon: "❤️" },
+      { id: "transporte", label: "Transporte", icon: "🚗" },
+      { id: "outros", label: "Outros", icon: "📦" },
+    ];
+    const CAT_COLORS = { trabalho: "#4ade80", moradia: "#60a5fa", alimentacao: "#f97316", lazer: "#a78bfa", apps: "#f472b6", saude: "#34d399", transporte: "#fbbf24", outros: "#94a3b8" };
+
+    // --- COMPONENTES VISUAIS ORIGINAIS (MascotFace, DonutChart mantidos) ---
+    function MascotFace({ state, size = 80, animated = true }) {
+        const configs = {
+            saudavel: { body: "#22c55e", shadow: "#16a34a", glow: "#4ade80", eyes: "#fff", pupils: "#1a1a2e", mouth: "M 28 52 Q 40 62 52 52", cheeks: "#f9a8d4" },
+            alerta: { body: "#eab308", shadow: "#ca8a04", glow: "#fde047", eyes: "#fff", pupils: "#1a1a2e", mouth: "M 30 54 Q 40 50 50 54", cheeks: "#fde047" },
+            critico: { body: "#ef4444", shadow: "#b91c1c", glow: "#f87171", eyes: "#fff", pupils: "#1a1a2e", mouth: "M 28 58 Q 40 48 52 58", cheeks: "#fca5a5" },
+            analitico: { body: "#8b5cf6", shadow: "#6d28d9", glow: "#a78bfa", eyes: "#fff", pupils: "#1a1a2e", mouth: "M 30 54 L 50 54", cheeks: "#c4b5fd" }
+        };
+        const c = configs[state] || configs.saudavel;
+        return (
+            <div style={{ position: "relative", width: size, height: size }}>
+                <div style={{ position: "absolute", inset: -size * 0.15, borderRadius: "50%", background: `radial-gradient(circle, ${c.glow}44 0%, transparent 70%)`, animation: animated ? "pulse-glow 2s ease-in-out infinite" : "none" }} />
+                <svg width={size} height={size} viewBox="0 0 80 80" style={{ position: "relative" }}>
+                    <circle cx="40" cy="40" r="32" fill={c.body} />
+                    <circle cx="27" cy="35" r="7" fill="#fff" /><circle cx="53" cy="35" r="7" fill="#fff" />
+                    <circle cx="28" cy="35" r="4" fill="#1a1a2e" /><circle cx="54" cy="35" r="4" fill="#1a1a2e" />
+                    <path d={c.mouth} stroke={c.shadow} strokeWidth="3" fill="none" strokeLinecap="round" />
+                </svg>
+            </div>
+        );
+    }
+
+    function DonutChart({ data, total }) {
+        const size = 160; const cx = 80, cy = 80, r = 58, innerR = 36;
+        let cumAngle = -Math.PI / 2;
+        const slices = data.map(d => {
+            const angle = (d.value / total) * 2 * Math.PI;
+            const start = cumAngle; cumAngle += angle;
+            const x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+            const x2 = cx + r * Math.cos(start + angle), y2 = cy + r * Math.sin(start + angle);
+            const ix1 = cx + innerR * Math.cos(start), iy1 = cy + innerR * Math.sin(start);
+            const ix2 = cx + innerR * Math.cos(start + angle), iy2 = cy + innerR * Math.sin(start + angle);
+            const path = `M ${x1} ${y1} A ${r} ${r} 0 ${angle > Math.PI ? 1 : 0} 1 ${x2} ${y2} L ${ix2} ${iy2} A ${innerR} ${innerR} 0 ${angle > Math.PI ? 1 : 0} 0 ${ix1} ${iy1} Z`;
+            return { ...d, path };
+        });
+        return (
+            <svg width={size} height={size}>
+                {slices.map((s, i) => <path key={i} d={s.path} fill={s.color} opacity="0.9" />)}
+                <circle cx={cx} cy={cy} r={innerR} fill="#0f0f1a" />
+                <text x={cx} y={cy+5} textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">R${total.toFixed(0)}</text>
+            </svg>
+        );
     }
 
     function App() {
-      // 1. Persistência de Dados
+      // --- ESTADOS COM PERSISTÊNCIA ---
       const [transactions, setTransactions] = useState(() => {
-        const saved = localStorage.getItem('finance_app_data');
-        return saved ? JSON.parse(saved) : [];
+        const saved = localStorage.getItem('finance_data');
+        return saved ? JSON.parse(saved) : [
+          { id: 1, desc: "Salário Inicial", amount: 5000, type: "receita", category: "trabalho", date: "2026-03-01", method: "pix" }
+        ];
       });
 
-      const [currentMonth, setCurrentMonth] = useState(() => {
-        const now = new Date();
-        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      });
+      const [selectedMonth, setSelectedMonth] = useState("2026-03");
+      const [activeTab, setActiveTab] = useState("dashboard");
+      const [showAddModal, setShowAddModal] = useState(false);
+      const [mascotBounce, setMascotBounce] = useState(false);
 
-      const [showModal, setShowModal] = useState(false);
-      const [form, setForm] = useState({ desc: "", amount: "", type: "despesa", date: new Date().toISOString().split("T")[0] });
+      const [form, setForm] = useState({ desc: "", amount: "", type: "despesa", category: "outros", method: "debito", date: new Date().toISOString().split("T")[0] });
 
       useEffect(() => {
-        localStorage.setItem('finance_app_data', JSON.stringify(transactions));
+        localStorage.setItem('finance_data', JSON.stringify(transactions));
       }, [transactions]);
 
-      // 2. Filtro Temporal
+      // --- FILTRO POR MÊS ---
       const filteredTx = useMemo(() => {
-        return transactions.filter(t => t.date.startsWith(currentMonth));
-      }, [transactions, currentMonth]);
+        return transactions.filter(t => t.date.startsWith(selectedMonth));
+      }, [transactions, selectedMonth]);
 
-      // Cálculos
-      const receitas = filteredTx.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-      const despesas = filteredTx.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
-      const saldo = receitas - despesas;
-
-      // Estado do Mascote (Lógica baseada no seu original)
-      const mascotState = saldo < 0 ? "critico" : saldo < 500 ? "alerta" : "saudavel";
-
-      const handleAdd = () => {
-        if (!form.desc || !form.amount) return;
-        const newTx = {
-          id: Date.now(),
-          ...form,
-          amount: form.type === "despesa" ? -Math.abs(form.amount) : Math.abs(form.amount)
-        };
-        setTransactions([...transactions, newTx]);
-        setShowModal(false);
-        setForm({ desc: "", amount: "", type: "despesa", date: new Date().toISOString().split("T")[0] });
-      };
-
-      // Gerar lista de meses para o seletor
-      const months = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06"];
-
-      return (
-        <div style={{ maxWidth: 420, margin: "0 auto", position: "relative", minHeight: "100vh" }}>
-          
-          {/* Seletor de Meses */}
-          <div className="month-nav">
-            {months.map(m => (
-              <button 
-                key={m} 
-                className={`month-pill ${currentMonth === m ? 'active' : ''}`}
-                onClick={() => setCurrentMonth(m)}
-              >
-                {new Date(m + "-02").toLocaleString('pt-BR', { month: 'short' }).toUpperCase()}
-              </button>
-            ))}
-          </div>
-
-          {/* Header com Mascote */}
-          <div style={{ padding: 20 }}>
-            <div className="card" style={{ display: "flex", alignItems: "center", gap: 20, borderLeft: `4px solid ${saldo >= 0 ? '#22c55e' : '#ef4444'}` }}>
-              <MascotFace state={mascotState} />
-              <div>
-                <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase" }}>Saldo em {currentMonth}</div>
-                <div style={{ fontSize: 24, fontWeight: 700, fontFamily: 'DM Mono' }}>
-                  R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Lista de Transações */}
-          <div style={{ padding: "0 20px 100px" }}>
-            <h3 style={{ fontSize: 14, color: "#64748b", marginBottom: 15 }}>Transações do Mês</h3>
-            {filteredTx.length === 0 ? (
-              <div style={{ textAlign: "center", padding: 40, color: "#475569" }}>Nenhum registro encontrado.</div>
-            ) : (
-              filteredTx.sort((a,b) => b.id - a.id).map(tx => (
-                <div key={tx.id} className="card" style={{ display: "flex", justifyContent: "space-between", padding: 12 }}>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 600 }}>{tx.desc}</div>
-                    <div style={{ fontSize: 11, color: "#475569" }}>{tx.date}</div>
-                  </div>
-                  <div style={{ color: tx.amount > 0 ? "#4ade80" : "#f87171", fontWeight: 700 }}>
-                    {tx.amount > 0 ? "+" : "-"} R$ {Math.abs(tx.amount).toFixed(2)}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <button className="add-btn" onClick={() => setShowModal(true)} style={{ background: "#22c55e" }}>+</button>
-
-          {/* Modal Simplificado */}
-          {showModal && (
-            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 100, display: "flex", alignItems: "flex-end" }}>
-              <div style={{ background: "#12121f", width: "100%", padding: 24, borderRadius: "24px 24px 0 0" }}>
-                <h3 style={{ margin: "0 0 20px" }}>Nova Transação</h3>
-                <input type="text" placeholder="Descrição" value={form.desc} onChange={e => setForm({...form, desc: e.target.value})} style={{ marginBottom: 12 }} />
-                <input type="number" placeholder="Valor" value={form.amount} onChange={e => setForm({...form, amount: e.target.value})} style={{ marginBottom: 12 }} />
-                <select value={form.type} onChange={e => setForm({...form, type: e.target.value})} style={{ marginBottom: 12 }}>
-                  <option value="despesa">Despesa</option>
-                  <option value="receita">Receita</option>
-                </select>
-                <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})} style={{ marginBottom: 20 }} />
-                <button onClick={handleAdd} style={{ width: "100%", padding: 14, background: "#22c55e", border: "none", borderRadius: 12, fontWeight: 700 }}>Salvar</button>
-                <button onClick={() => setShowModal(false)} style={{ width: "100%", padding: 10, background: "transparent", color: "#64748b", border: "none", marginTop: 10 }}>Cancelar</button>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
-</body>
-</html>
+      // --- CÁLCULOS TOTAIS ---
+      const receitas = filteredTx.filter(
